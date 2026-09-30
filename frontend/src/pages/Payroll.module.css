@@ -1,0 +1,30 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.tab:hover { color: #D4AF37; }
+
+.tabActive {
+  color: #D4AF37;
+  border-bottom-color: #D4AF37;
+  font-weight: 600;
+}
+
+.tabContent {
+  min-height: 300px;
+}

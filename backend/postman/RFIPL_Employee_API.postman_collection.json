@@ -1,0 +1,1002 @@
+{
+  "info": {
+    "_postman_id": "1f2d3c4b-5a67-4890-abcd-ef0123456789",
+    "name": "RFIPL Employee Management API",
+    "description": "Postman collection for testing the RFIPL Employee Management module.\n\nSETUP:\n1. Import this file into Postman (File > Import)\n2. Set your base URL in the collection variable `baseUrl` (default: http://localhost:5000)\n3. Make sure the database is imported (sql/hrms and payroll.sql) and the server is running (npm run test)\n4. Run requests in order within each folder: first create records, then read/update/delete using returned IDs\n\nNOTE: The /emps/stats route should run BEFORE /:id routes since Postman can match route order.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "employeeId",
+      "value": "1"
+    },
+    {
+      "key": "departmentId",
+      "value": "1"
+    },
+    {
+      "key": "designationId",
+      "value": "1"
+    },
+    {
+      "key": "contactId",
+      "value": "1"
+    },
+    {
+      "key": "documentId",
+      "value": "1"
+    },
+    {
+      "key": "bankId",
+      "value": "1"
+    },
+    {
+      "key": "shiftAssignmentId",
+      "value": "1"
+    },
+    {
+      "key": "salaryStructureId",
+      "value": "1"
+    },
+    {
+      "key": "overtimeRateId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Base",
+      "item": [
+        {
+          "name": "Check API health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Root endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production\",\n  \"code\": \"PROD\",\n  \"description\": \"Production department\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('departmentId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Department 2 (For testing)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales\",\n  \"code\": \"SALES\",\n  \"description\": \"Sales department\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Department by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/{{departmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "{{departmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Department",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production\",\n  \"code\": \"PROD\",\n  \"description\": \"Production department - updated\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/{{departmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "{{departmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Department",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/{{departmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "{{departmentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Designations",
+      "item": [
+        {
+          "name": "Create Designation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production Supervisor\",\n  \"code\": \"SUP\",\n  \"description\": \"Supervises production line\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/designations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('designationId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Designation 2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Executive\",\n  \"code\": \"SE\",\n  \"description\": \"Sales team member\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/designations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations"]
+            }
+          }
+        },
+        {
+          "name": "Get All Designations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/designations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Designations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/designations/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Designation by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/designations/{{designationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations", "{{designationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Designation",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production Supervisor\",\n  \"code\": \"SUP\",\n  \"description\": \"Supervises production line - updated\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/designations/{{designationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations", "{{designationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Designation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/designations/{{designationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "designations", "{{designationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeCode\": \"EMP001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1990-05-15\",\n  \"gender\": \"male\",\n  \"personalEmail\": \"john.doe@example.com\",\n  \"phone\": \"9876543210\",\n  \"currentAddress\": \"123 Main St\",\n  \"permanentAddress\": \"123 Main St\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"country\": \"India\",\n  \"pincode\": \"400001\",\n  \"departmentId\": \"{{departmentId}}\",\n  \"designationId\": \"{{designationId}}\",\n  \"reportingManagerId\": null,\n  \"joiningDate\": \"2023-01-01\",\n  \"employmentType\": \"permanent\",\n  \"employmentStatus\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('employeeId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Employee 2 (Manager)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeCode\": \"EMP002\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"dateOfBirth\": \"1985-03-20\",\n  \"gender\": \"female\",\n  \"personalEmail\": \"jane.smith@example.com\",\n  \"phone\": \"9876543211\",\n  \"currentAddress\": \"456 Elm St\",\n  \"city\": \"Pune\",\n  \"state\": \"Maharashtra\",\n  \"country\": \"India\",\n  \"pincode\": \"411001\",\n  \"departmentId\": \"{{departmentId}}\",\n  \"designationId\": \"{{designationId}}\",\n  \"joiningDate\": \"2022-06-01\",\n  \"employmentType\": \"permanent\",\n  \"employmentStatus\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"]
+            }
+          }
+        },
+        {
+          "name": "Get All Employees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"]
+            }
+          }
+        },
+        {
+          "name": "Get Employee Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Search Employees",
+          "description": "Filters: departmentId, designationId, employmentStatus, search (name/code/phone)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees?departmentId={{departmentId}}&employmentStatus=active&search=John",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"],
+              "query": [
+                { "key": "departmentId", "value": "{{departmentId}}" },
+                { "key": "employmentStatus", "value": "active" },
+                { "key": "search", "value": "John" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Employee by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeCode\": \"EMP001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1990-05-15\",\n  \"gender\": \"male\",\n  \"personalEmail\": \"john.updated@example.com\",\n  \"phone\": \"9876543210\",\n  \"departmentId\": \"{{departmentId}}\",\n  \"designationId\": \"{{designationId}}\",\n  \"joiningDate\": \"2023-01-01\",\n  \"employmentType\": \"permanent\",\n  \"employmentStatus\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Employee Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employmentStatus\": \"on_notice\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/{{employeeId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", "{{employeeId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Delete Employee",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", "{{employeeId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Emergency Contacts",
+      "item": [
+        {
+          "name": "Create Emergency Contact",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"name\": \"Mary Doe\",\n  \"relationship\": \"Spouse\",\n  \"phone\": \"9123456780\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency-contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency-contacts"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('contactId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Contacts by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency-contacts/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency-contacts", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Contact by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency-contacts/{{contactId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency-contacts", "{{contactId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Emergency Contact",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mary Doe\",\n  \"relationship\": \"Spouse\",\n  \"phone\": \"9123456799\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency-contacts/{{contactId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency-contacts", "{{contactId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Emergency Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency-contacts/{{contactId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency-contacts", "{{contactId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Create Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"documentType\": \"aadhaar\",\n  \"documentName\": \"Aadhaar Card\",\n  \"filePath\": \"/uploads/emp001-aadhaar.pdf\",\n  \"issuedDate\": \"2020-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('documentId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Documents by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Document by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Document",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"aadhaar\",\n  \"documentName\": \"Aadhaar Card - Updated\",\n  \"filePath\": \"/uploads/emp001-aadhaar.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{documentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{documentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bank Details",
+      "item": [
+        {
+          "name": "Create Bank Details",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"accountHolderName\": \"John Doe\",\n  \"bankName\": \"State Bank of India\",\n  \"accountNumberEncrypted\": \"1234567890123456\",\n  \"ifscCode\": \"SBIN0001234\",\n  \"branchName\": \"Mumbai Main\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bank-details",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bank-details"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('bankId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Bank Details by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bank-details/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bank-details", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Bank Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bank-details/{{bankId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bank-details", "{{bankId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Bank Details",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountHolderName\": \"John Doe\",\n  \"bankName\": \"HDFC Bank\",\n  \"accountNumberEncrypted\": \"1234567890123456\",\n  \"ifscCode\": \"HDFC0001234\",\n  \"branchName\": \"Mumbai Main\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bank-details/{{bankId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bank-details", "{{bankId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bank Details",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bank-details/{{bankId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bank-details", "{{bankId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shift Assignments",
+      "item": [
+        {
+          "name": "Create Shift Assignment",
+          "description": "NOTE: Requires a shift record in the shifts table. Create one in the DB first if none exists (e.g. INSERT INTO shifts (name, startTime, endTime) VALUES ('General', '09:00:00', '18:00:00');) then update the shiftId below.",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"shiftId\": 1,\n  \"effectiveFrom\": \"2023-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('shiftAssignmentId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Shift Assignments by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Shift Assignment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments/active/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments", "active", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Shift Assignment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments/{{shiftAssignmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments", "{{shiftAssignmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Shift Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shiftId\": 1,\n  \"effectiveFrom\": \"2023-01-01\",\n  \"effectiveTo\": \"2023-12-31\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments/{{shiftAssignmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments", "{{shiftAssignmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Shift Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shift-assignments/{{shiftAssignmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shift-assignments", "{{shiftAssignmentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Salary Structures",
+      "item": [
+        {
+          "name": "Create Salary Structure Assignment",
+          "description": "NOTE: Requires a salary_structures record. Create one first if needed (e.g. INSERT INTO salary_structures (name) VALUES ('Monthly Salary');) then update salaryStructureId below.",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"salaryStructureId\": 1,\n  \"effectiveFrom\": \"2023-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('salaryStructureId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Salary Structures by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Salary Structure",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures/active/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures", "active", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Salary Structure by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures/{{salaryStructureId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures", "{{salaryStructureId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Salary Structure Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salaryStructureId\": 1,\n  \"effectiveFrom\": \"2023-01-01\",\n  \"effectiveTo\": \"2023-12-31\",\n  \"status\": \"active\",\n  \"revisionReason\": \"Annual revision\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures/{{salaryStructureId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures", "{{salaryStructureId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Salary Structure Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures/{{salaryStructureId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures", "{{salaryStructureId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Overtime Rates",
+      "item": [
+        {
+          "name": "Create Overtime Rate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"hourlyRate\": 200.50,\n  \"effectiveFrom\": \"2023-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('overtimeRateId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Overtime Rates by Employee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates/employee/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates", "employee", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Overtime Rate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates/active/{{employeeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates", "active", "{{employeeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Overtime Rate by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates/{{overtimeRateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates", "{{overtimeRateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Overtime Rate",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hourlyRate\": 250.00,\n  \"effectiveFrom\": \"2023-01-01\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates/{{overtimeRateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates", "{{overtimeRateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Overtime Rate",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime-rates/{{overtimeRateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime-rates", "{{overtimeRateId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

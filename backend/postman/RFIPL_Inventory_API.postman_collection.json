@@ -1,0 +1,322 @@
+{
+  "info": {
+    "_postman_id": "bf3e2d4c-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
+    "name": "RFIPL Inventory API",
+    "description": "Postman collection for testing the RFIPL Inventory module.\n\nSETUP:\n1. Import this file (File > Import)\n2. baseUrl variable defaults to http://localhost:5000\n3. Ensure sql/inventory.sql is imported and server running\n4. WORKFLOW: Run 'Auth > Login' first. Login auto-saves your accessToken as a collection variable. All other requests use Authorization: Bearer {{accessToken}} automatically.\n5. NOTE: Employees table must have at least one row (purchase requests, orders, GRN, QC, production, dispatch, transfer, adjustment, damage, tool assignments all reference employees(id)). Create one via the Employee API before testing those flows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "unitId", "value": "1" },
+    { "key": "categoryId", "value": "1" },
+    { "key": "locationId", "value": "1" },
+    { "key": "supplierId", "value": "1" },
+    { "key": "rawMaterialId", "value": "1" },
+    { "key": "batchId", "value": "1" },
+    { "key": "rawStockId", "value": "1" },
+    { "key": "rawLedgerId", "value": "1" },
+    { "key": "prId", "value": "1" },
+    { "key": "prItemId", "value": "1" },
+    { "key": "poId", "value": "1" },
+    { "key": "poItemId", "value": "1" },
+    { "key": "grnId", "value": "1" },
+    { "key": "grnItemId", "value": "1" },
+    { "key": "qcId", "value": "1" },
+    { "key": "finishedProductId", "value": "1" },
+    { "key": "fpBatchId", "value": "1" },
+    { "key": "fpStockId", "value": "1" },
+    { "key": "fpLedgerId", "value": "1" },
+    { "key": "bomId", "value": "1" },
+    { "key": "bomItemId", "value": "1" },
+    { "key": "productionOrderId", "value": "1" },
+    { "key": "outputId", "value": "1" },
+    { "key": "customerId", "value": "1" },
+    { "key": "soId", "value": "1" },
+    { "key": "soItemId", "value": "1" },
+    { "key": "dispatchId", "value": "1" },
+    { "key": "invoiceId", "value": "1" },
+    { "key": "invoiceItemId", "value": "1" },
+    { "key": "paymentId", "value": "1" },
+    { "key": "returnId", "value": "1" },
+    { "key": "returnItemId", "value": "1" },
+    { "key": "machineId", "value": "1" },
+    { "key": "breakdownId", "value": "1" },
+    { "key": "toolId", "value": "1" },
+    { "key": "toolAllocationId", "value": "1" },
+    { "key": "toolAssignmentId", "value": "1" },
+    { "key": "transferId", "value": "1" },
+    { "key": "adjustmentId", "value": "1" },
+    { "key": "damageId", "value": "1" },
+    { "key": "notificationId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test.user@rfipl.com\",\n  \"password\": \"Test@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inventory Units",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-units", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units"] } }, "name": "Get All Units" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-units/{{unitId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units", "{{unitId}}"] } }, "name": "Get Unit By Id" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Box\",\n  \"symbol\": \"bx\",\n  \"baseUnitFlag\": false\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-units", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units"] } }, "name": "Create Unit", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('unitId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Box (Updated)\",\n  \"symbol\": \"bx\"\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-units/{{unitId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units", "{{unitId}}"] } }, "name": "Update Unit" },
+        { "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-units/{{unitId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units", "{{unitId}}"] } }, "name": "Delete Unit" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-units/{{unitId}}/conversions", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units", "{{unitId}}", "conversions"] } }, "name": "Get Unit Conversions" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fromUnitId\": 1,\n  \"toUnitId\": 2,\n  \"conversionFactor\": 1000\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-units/{{unitId}}/conversions", "host": ["{{baseUrl}}"], "path": ["api", "inventory-units", "{{unitId}}", "conversions"] } }, "name": "Create Unit Conversion" }
+      ]
+    },
+    {
+      "name": "Inventory Categories",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-categories", "host": ["{{baseUrl}}"], "path": ["api", "inventory-categories"] } }, "name": "Get All Categories" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Raw Metal Sheets\",\n  \"inventoryType\": \"raw_material\"\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-categories", "host": ["{{baseUrl}}"], "path": ["api", "inventory-categories"] } }, "name": "Create Category", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('categoryId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Raw Metal Sheets V2\",\n  \"inventoryType\": \"raw_material\"\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-categories", "{{categoryId}}"] } }, "name": "Update Category" },
+        { "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-categories", "{{categoryId}}"] } }, "name": "Delete Category" }
+      ]
+    },
+    {
+      "name": "Stock Locations",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/stock-locations", "host": ["{{baseUrl}}"], "path": ["api", "stock-locations"] } }, "name": "Get All Locations" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Main Store\",\n  \"code\": \"STORE-001\",\n  \"address\": \"Bay 1\"\n}" }, "url": { "raw": "{{baseUrl}}/api/stock-locations", "host": ["{{baseUrl}}"], "path": ["api", "stock-locations"] } }, "name": "Create Location", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('locationId',j.id);}"], "type": "text/javascript" } }] }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "suppliers"] } }, "name": "Get All Suppliers" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"supplierCode\": \"SUP-001\",\n  \"companyName\": \"Acme Metals Pvt Ltd\",\n  \"gstNumber\": \"GSTIN123456\"\n}" }, "url": { "raw": "{{baseUrl}}/api/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "suppliers"] } }, "name": "Create Supplier", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('supplierId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/suppliers/{{supplierId}}", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "{{supplierId}}"] } }, "name": "Get Supplier By Id" },
+        { "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"companyName\": \"Acme Metals Ltd\"\n}" }, "url": { "raw": "{{baseUrl}}/api/suppliers/{{supplierId}}", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "{{supplierId}}"] } }, "name": "Update Supplier" },
+        { "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/suppliers/{{supplierId}}", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "{{supplierId}}"] } }, "name": "Delete Supplier" }
+      ]
+    },
+    {
+      "name": "Raw Materials",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"] } }, "name": "Get All Raw Materials" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"sku\": \"RM-001\",\n  \"name\": \"Steel Sheet\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"unitId\": 1,\n  \"minimumStockLevel\": 50\n}" }, "url": { "raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"] } }, "name": "Create Raw Material", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('rawMaterialId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-materials/{{rawMaterialId}}", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "{{rawMaterialId}}"] } }, "name": "Get Raw Material By Id" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"supplierId\": \"{{supplierId}}\",\n  \"leadTimeDays\": 7,\n  \"unitCost\": 50\n}" }, "url": { "raw": "{{baseUrl}}/api/raw-materials/{{rawMaterialId}}/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "{{rawMaterialId}}", "suppliers"] } }, "name": "Link Supplier To Raw Material" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-materials/{{rawMaterialId}}/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "{{rawMaterialId}}", "suppliers"] } }, "name": "Get Raw Material Suppliers" }
+      ]
+    },
+    {
+      "name": "Raw Material Stock",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-material-stock", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock"] } }, "name": "Get Raw Stock" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rawMaterialId\": \"{{rawMaterialId}}\",\n  \"batchId\": \"{{batchId}}\",\n  \"locationId\": \"{{locationId}}\",\n  \"quantity\": 100,\n  \"unitId\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/raw-material-stock/stock", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "stock"] } }, "name": "Add Raw Stock Row", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('rawStockId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-material-stock/batches", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "batches"] } }, "name": "Get Raw Batches" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rawMaterialId\": \"{{rawMaterialId}}\",\n  \"supplierId\": \"{{supplierId}}\",\n  \"batchNumber\": \"BATCH-001\",\n  \"receivedDate\": \"2026-09-01\",\n  \"purchasePrice\": 50,\n  \"originalQuantity\": 100,\n  \"currentQuantity\": 100,\n  \"unitId\": 1,\n  \"qcStatus\": \"pending\"\n}" }, "url": { "raw": "{{baseUrl}}/api/raw-material-stock/batches", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "batches"] } }, "name": "Create Raw Batch", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('batchId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-material-stock/summary", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "summary"] } }, "name": "Raw Stock Summary" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-material-stock/low-stock", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "low-stock"] } }, "name": "Raw Stock Low Stock Alerts" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/raw-material-stock/ledger?rawMaterialId={{rawMaterialId}}", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "ledger"] } }, "name": "Get Raw Ledger" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rawMaterialId\": \"{{rawMaterialId}}\",\n  \"locationId\": \"{{locationId}}\",\n  \"transactionType\": \"opening\",\n  \"quantityIn\": 50,\n  \"unitCost\": 50\n}" }, "url": { "raw": "{{baseUrl}}/api/raw-material-stock/ledger", "host": ["{{baseUrl}}"], "path": ["api", "raw-material-stock", "ledger"] } }, "name": "Create Raw Ledger Entry" }
+      ]
+    },
+    {
+      "name": "Purchase Requests",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-requests", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests"] } }, "name": "Get All Purchase Requests" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"requestNumber\": \"PR-2026-001\",\n  \"requestedBy\": 1,\n  \"requestDate\": \"2026-09-01\",\n  \"items\": [\n    { \"rawMaterialId\": 1, \"quantity\": 100, \"unitId\": 1 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/purchase-requests", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests"] } }, "name": "Create Purchase Request", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('prId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/purchase-requests/{{prId}}/submit", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests", "{{prId}}", "submit"] } }, "name": "Submit Purchase Request" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"managerApprovedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/purchase-requests/{{prId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests", "{{prId}}", "approve"] } }, "name": "Approve Purchase Request" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-requests/{{prId}}", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests", "{{prId}}"] } }, "name": "Get Purchase Request By Id" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-requests/{{prId}}/items", "host": ["{{baseUrl}}"], "path": ["api", "purchase-requests", "{{prId}}", "items"] } }, "name": "Get Purchase Request Items" }
+      ]
+    },
+    {
+      "name": "Purchase Orders",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-orders", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders"] } }, "name": "Get All Purchase Orders" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"poNumber\": \"PO-2026-001\",\n  \"purchaseRequestId\": \"{{prId}}\",\n  \"supplierId\": \"{{supplierId}}\",\n  \"orderDate\": \"2026-09-02\",\n  \"createdBy\": 1,\n  \"items\": [\n    { \"rawMaterialId\": \"{{rawMaterialId}}\", \"orderedQuantity\": 100, \"unitId\": 1, \"unitPrice\": 50 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/purchase-orders", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders"] } }, "name": "Create Purchase Order", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('poId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/purchase-orders/{{poId}}/submit", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders", "{{poId}}", "submit"] } }, "name": "Submit Purchase Order" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"adminApprovedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/purchase-orders/{{poId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders", "{{poId}}", "approve"] } }, "name": "Approve Purchase Order" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-orders/{{poId}}/items", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders", "{{poId}}", "items"] } }, "name": "Get Purchase Order Items", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(Array.isArray(j)&&j.length){pm.collectionVariables.set('poItemId',j[0].id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/purchase-orders/{{poId}}", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders", "{{poId}}"] } }, "name": "Get Purchase Order By Id" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/purchase-orders/{{poId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "purchase-orders", "{{poId}}", "cancel"] } }, "name": "Cancel Purchase Order" }
+      ]
+    },
+    {
+      "name": "Goods Receipts",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/goods-receipts", "host": ["{{baseUrl}}"], "path": ["api", "goods-receipts"] } }, "name": "Get All Goods Receipts" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"grnNumber\": \"GRN-2026-001\",\n  \"purchaseOrderId\": \"{{poId}}\",\n  \"supplierId\": \"{{supplierId}}\",\n  \"receivedDate\": \"2026-09-03\",\n  \"receivedBy\": 1,\n  \"items\": [\n    { \"purchaseOrderItemId\": \"{{poItemId}}\", \"rawMaterialId\": \"{{rawMaterialId}}\", \"batchNumber\": \"B-001\", \"receivedQuantity\": 100, \"unitId\": 1, \"purchasePrice\": 50, \"locationId\": \"{{locationId}}\" }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/goods-receipts", "host": ["{{baseUrl}}"], "path": ["api", "goods-receipts"] } }, "name": "Create Goods Receipt", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('grnId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/goods-receipts/{{grnId}}", "host": ["{{baseUrl}}"], "path": ["api", "goods-receipts", "{{grnId}}"] } }, "name": "Get Goods Receipt By Id" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/goods-receipts/{{grnId}}/items", "host": ["{{baseUrl}}"], "path": ["api", "goods-receipts", "{{grnId}}", "items"] } }, "name": "Get GRN Items", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(Array.isArray(j)&&j.length){pm.collectionVariables.set('grnItemId',j[0].id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/goods-receipts/{{grnId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "goods-receipts", "{{grnId}}", "cancel"] } }, "name": "Cancel Goods Receipt" }
+      ]
+    },
+    {
+      "name": "Quality Inspections",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/quality-inspections", "host": ["{{baseUrl}}"], "path": ["api", "quality-inspections"] } }, "name": "Get All Inspections" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"goodsReceiptItemId\": \"{{grnItemId}}\",\n  \"inspectedBy\": 1,\n  \"approvedQuantity\": 80,\n  \"rejectedQuantity\": 20,\n  \"status\": \"partially_approved\",\n  \"rejectionAction\": \"rejected_stock\"\n}" }, "url": { "raw": "{{baseUrl}}/api/quality-inspections", "host": ["{{baseUrl}}"], "path": ["api", "quality-inspections"] } }, "name": "Create Inspection", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('qcId',j.id);}"], "type": "text/javascript" } }] }
+      ]
+    },
+    {
+      "name": "Finished Products",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-products", "host": ["{{baseUrl}}"], "path": ["api", "finished-products"] } }, "name": "Get All Finished Products" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"sku\": \"FP-001\",\n  \"name\": \"Panel X\",\n  \"categoryId\": 1,\n  \"unitId\": 8,\n  \"sellingPrice\": 500\n}" }, "url": { "raw": "{{baseUrl}}/api/finished-products", "host": ["{{baseUrl}}"], "path": ["api", "finished-products"] } }, "name": "Create Finished Product", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('finishedProductId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-products/{{finishedProductId}}", "host": ["{{baseUrl}}"], "path": ["api", "finished-products", "{{finishedProductId}}"] } }, "name": "Get Finished Product By Id" }
+      ]
+    },
+    {
+      "name": "Bills of Materials",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/bills-of-materials", "host": ["{{baseUrl}}"], "path": ["api", "bills-of-materials"] } }, "name": "Get All BOMs" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"bomNumber\": \"BOM-001\",\n  \"finishedProductId\": \"{{finishedProductId}}\",\n  \"name\": \"Standard Build\",\n  \"outputQuantity\": 10,\n  \"outputUnitId\": 8,\n  \"items\": [\n    { \"rawMaterialId\": \"{{rawMaterialId}}\", \"requiredQuantity\": 10, \"unitId\": 1, \"wastagePercentage\": 2 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/bills-of-materials", "host": ["{{baseUrl}}"], "path": ["api", "bills-of-materials"] } }, "name": "Create BOM", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('bomId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/bills-of-materials/{{bomId}}", "host": ["{{baseUrl}}"], "path": ["api", "bills-of-materials", "{{bomId}}"] } }, "name": "Get BOM By Id" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/bills-of-materials/{{bomId}}/items", "host": ["{{baseUrl}}"], "path": ["api", "bills-of-materials", "{{bomId}}", "items"] } }, "name": "Get BOM Items" }
+      ]
+    },
+    {
+      "name": "Production Orders",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/production-orders", "host": ["{{baseUrl}}"], "path": ["api", "production-orders"] } }, "name": "Get All Production Orders" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"productionNumber\": \"PRD-001\",\n  \"bomId\": \"{{bomId}}\",\n  \"status\": \"planned\",\n  \"createdBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/production-orders", "host": ["{{baseUrl}}"], "path": ["api", "production-orders"] } }, "name": "Create Production Order", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('productionOrderId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/production-orders/{{productionOrderId}}/start", "host": ["{{baseUrl}}"], "path": ["api", "production-orders", "{{productionOrderId}}", "start"] } }, "name": "Start Production Order" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rawMaterialId\": \"{{rawMaterialId}}\",\n  \"locationId\": \"{{locationId}}\",\n  \"consumptionMode\": \"automatic\",\n  \"consumedQuantity\": 80,\n  \"unitId\": 1,\n  \"consumedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/production-orders/{{productionOrderId}}/consumptions", "host": ["{{baseUrl}}"], "path": ["api", "production-orders", "{{productionOrderId}}", "consumptions"] } }, "name": "Record Consumption" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"finishedProductId\": \"{{finishedProductId}}\",\n  \"batchNumber\": \"FB-001\",\n  \"outputQuantity\": 100,\n  \"unitId\": 8,\n  \"locationId\": \"{{locationId}}\",\n  \"manufacturingDate\": \"2026-09-05\"\n}" }, "url": { "raw": "{{baseUrl}}/api/production-orders/{{productionOrderId}}/outputs", "host": ["{{baseUrl}}"], "path": ["api", "production-orders", "{{productionOrderId}}", "outputs"] } }, "name": "Record Output", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('outputId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/production-orders/{{productionOrderId}}/complete", "host": ["{{baseUrl}}"], "path": ["api", "production-orders", "{{productionOrderId}}", "complete"] } }, "name": "Complete Production Order" }
+      ]
+    },
+    {
+      "name": "Finished Product Stock",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-product-stock", "host": ["{{baseUrl}}"], "path": ["api", "finished-product-stock"] } }, "name": "Get Finished Product Stock" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-product-stock/batches", "host": ["{{baseUrl}}"], "path": ["api", "finished-product-stock", "batches"] } }, "name": "Get FP Batches" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-product-stock/summary", "host": ["{{baseUrl}}"], "path": ["api", "finished-product-stock", "summary"] } }, "name": "FP Stock Summary" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-product-stock/low-stock", "host": ["{{baseUrl}}"], "path": ["api", "finished-product-stock", "low-stock"] } }, "name": "FP Low Stock Alerts" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/finished-product-stock/ledger?finishedProductId={{finishedProductId}}", "host": ["{{baseUrl}}"], "path": ["api", "finished-product-stock", "ledger"] } }, "name": "Get FP Ledger" }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/customers", "host": ["{{baseUrl}}"], "path": ["api", "customers"] } }, "name": "Get All Customers" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"customerCode\": \"CUS-001\",\n  \"companyName\": \"Buyer Co Ltd\"\n}" }, "url": { "raw": "{{baseUrl}}/api/customers", "host": ["{{baseUrl}}"], "path": ["api", "customers"] } }, "name": "Create Customer", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('customerId',j.id);}"], "type": "text/javascript" } }] }
+      ]
+    },
+    {
+      "name": "Sales Orders",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/sales-orders", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders"] } }, "name": "Get All Sales Orders" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"salesOrderNumber\": \"SO-001\",\n  \"customerId\": \"{{customerId}}\",\n  \"orderDate\": \"2026-09-06\",\n  \"createdBy\": 1,\n  \"items\": [\n    { \"finishedProductId\": \"{{finishedProductId}}\", \"orderedQuantity\": 40, \"unitId\": 8, \"unitPrice\": 500 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/sales-orders", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders"] } }, "name": "Create Sales Order", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('soId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/sales-orders/{{soId}}/submit", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "{{soId}}", "submit"] } }, "name": "Submit Sales Order" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"managerApprovedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/sales-orders/{{soId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "{{soId}}", "approve"] } }, "name": "Approve Sales Order" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/sales-orders/{{soId}}/items", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "{{soId}}", "items"] } }, "name": "Get Sales Order Items", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(Array.isArray(j)&&j.length){pm.collectionVariables.set('soItemId',j[0].id);}"], "type": "text/javascript" } }] }
+      ]
+    },
+    {
+      "name": "Dispatches",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/dispatches", "host": ["{{baseUrl}}"], "path": ["api", "dispatches"] } }, "name": "Get All Dispatches" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"dispatchNumber\": \"DSP-001\",\n  \"salesOrderId\": \"{{soId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"dispatchDate\": \"2026-09-07\",\n  \"fromLocationId\": \"{{locationId}}\",\n  \"dispatchedBy\": 1,\n  \"items\": [\n    { \"salesOrderItemId\": \"{{soItemId}}\", \"finishedProductId\": \"{{finishedProductId}}\", \"batchId\": \"{{fpBatchId}}\", \"dispatchedQuantity\": 40, \"unitId\": 8 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/dispatches", "host": ["{{baseUrl}}"], "path": ["api", "dispatches"] } }, "name": "Create Dispatch", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('dispatchId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/dispatches/{{dispatchId}}", "host": ["{{baseUrl}}"], "path": ["api", "dispatches", "{{dispatchId}}"] } }, "name": "Get Dispatch By Id" }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api", "invoices"] } }, "name": "Get All Invoices" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"invoiceNumber\": \"INV-001\",\n  \"salesOrderId\": \"{{soId}}\",\n  \"dispatchId\": \"{{dispatchId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"invoiceDate\": \"2026-09-08\",\n  \"createdBy\": 1,\n  \"items\": [\n    { \"finishedProductId\": \"{{finishedProductId}}\", \"quantity\": 40, \"unitId\": 8, \"unitPrice\": 500 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api", "invoices"] } }, "name": "Create Invoice", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('invoiceId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/invoices/{{invoiceId}}", "host": ["{{baseUrl}}"], "path": ["api", "invoices", "{{invoiceId}}"] } }, "name": "Get Invoice By Id" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"paymentNumber\": \"PAY-001\",\n  \"customerId\": \"{{customerId}}\",\n  \"paymentDate\": \"2026-09-09\",\n  \"amount\": 20000,\n  \"paymentMethod\": \"bank_transfer\"\n}" }, "url": { "raw": "{{baseUrl}}/api/invoices/{{invoiceId}}/payments", "host": ["{{baseUrl}}"], "path": ["api", "invoices", "{{invoiceId}}", "payments"] } }, "name": "Record Payment", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('paymentId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/invoices/{{invoiceId}}/payments", "host": ["{{baseUrl}}"], "path": ["api", "invoices", "{{invoiceId}}", "payments"] } }, "name": "Get Invoice Payments" }
+      ]
+    },
+    {
+      "name": "Customer Returns",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/customer-returns", "host": ["{{baseUrl}}"], "path": ["api", "customer-returns"] } }, "name": "Get All Returns" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"returnNumber\": \"RET-001\",\n  \"invoiceId\": \"{{invoiceId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"returnDate\": \"2026-09-09\"\n}" }, "url": { "raw": "{{baseUrl}}/api/customer-returns", "host": ["{{baseUrl}}"], "path": ["api", "customer-returns"] } }, "name": "Create Return", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('returnId',j.id);}"], "type": "text/javascript" } }] }
+      ]
+    },
+    {
+      "name": "Stock Transfers",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/stock-transfers", "host": ["{{baseUrl}}"], "path": ["api", "stock-transfers"] } }, "name": "Get All Transfers" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"transferNumber\": \"TR-001\",\n  \"inventoryType\": \"finished_product\",\n  \"fromLocationId\": \"{{locationId}}\",\n  \"toLocationId\": 1,\n  \"transferredBy\": 1,\n  \"items\": [\n    { \"itemType\": \"finished_product\", \"itemId\": \"{{finishedProductId}}\", \"batchNumber\": \"FB-001\", \"quantity\": 20, \"unitId\": 8 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/stock-transfers", "host": ["{{baseUrl}}"], "path": ["api", "stock-transfers"] } }, "name": "Create Transfer", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('transferId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/stock-transfers/{{transferId}}", "host": ["{{baseUrl}}"], "path": ["api", "stock-transfers", "{{transferId}}"] } }, "name": "Get Transfer By Id" }
+      ]
+    },
+    {
+      "name": "Stock Adjustments",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/stock-adjustments", "host": ["{{baseUrl}}"], "path": ["api", "stock-adjustments"] } }, "name": "Get All Adjustments" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"adjustmentNumber\": \"ADJ-001\",\n  \"inventoryType\": \"finished_product\",\n  \"requestedBy\": 1,\n  \"reason\": \"physical_count_difference\",\n  \"items\": [\n    { \"itemType\": \"finished_product\", \"itemId\": \"{{finishedProductId}}\", \"batchNumber\": \"FB-001\", \"locationId\": \"{{locationId}}\", \"systemQuantity\": 40, \"physicalQuantity\": 45, \"unitId\": 8 }\n  ]\n}" }, "url": { "raw": "{{baseUrl}}/api/stock-adjustments", "host": ["{{baseUrl}}"], "path": ["api", "stock-adjustments"] } }, "name": "Create Adjustment", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('adjustmentId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"approvedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/stock-adjustments/{{adjustmentId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "stock-adjustments", "{{adjustmentId}}", "approve"] } }, "name": "Approve Adjustment" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/stock-adjustments/{{adjustmentId}}/apply", "host": ["{{baseUrl}}"], "path": ["api", "stock-adjustments", "{{adjustmentId}}", "apply"] } }, "name": "Apply Adjustment" }
+      ]
+    },
+    {
+      "name": "Damage / Loss",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/damage-loss-reports", "host": ["{{baseUrl}}"], "path": ["api", "damage-loss-reports"] } }, "name": "Get All Damage Reports" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"reportNumber\": \"DL-001\",\n  \"inventoryType\": \"finished_product\",\n  \"itemId\": \"{{finishedProductId}}\",\n  \"locationId\": \"{{locationId}}\",\n  \"reportType\": \"damage\",\n  \"quantity\": 5,\n  \"incidentDate\": \"2026-09-10\",\n  \"description\": \"Shelf damage\",\n  \"reportedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/damage-loss-reports", "host": ["{{baseUrl}}"], "path": ["api", "damage-loss-reports"] } }, "name": "Create Damage Report", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('damageId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"approvedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/damage-loss-reports/{{damageId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "damage-loss-reports", "{{damageId}}", "approve"] } }, "name": "Approve Damage Report" },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": { "raw": "{{baseUrl}}/api/damage-loss-reports/{{damageId}}/apply", "host": ["{{baseUrl}}"], "path": ["api", "damage-loss-reports", "{{damageId}}", "apply"] } }, "name": "Apply Damage Report" }
+      ]
+    },
+    {
+      "name": "Machines",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/machines", "host": ["{{baseUrl}}"], "path": ["api", "machines"] } }, "name": "Get All Machines" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"machineCode\": \"M-001\",\n  \"machineName\": \"Press Machine\",\n  \"departmentId\": 1,\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{baseUrl}}/api/machines", "host": ["{{baseUrl}}"], "path": ["api", "machines"] } }, "name": "Create Machine", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('machineId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"breakdownDateTime\": \"2026-09-11T10:00:00\",\n  \"problemDescription\": \"Motor overheating\",\n  \"reportedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/machines/{{machineId}}/breakdowns", "host": ["{{baseUrl}}"], "path": ["api", "machines", "{{machineId}}", "breakdowns"] } }, "name": "Report Breakdown", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('breakdownId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"resolutionDetails\": \"Replaced motor\",\n  \"resolvedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/machines/breakdowns/{{breakdownId}}/resolve", "host": ["{{baseUrl}}"], "path": ["api", "machines", "breakdowns", "{{breakdownId}}", "resolve"] } }, "name": "Resolve Breakdown" },
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/machines/{{machineId}}", "host": ["{{baseUrl}}"], "path": ["api", "machines", "{{machineId}}"] } }, "name": "Get Machine By Id" }
+      ]
+    },
+    {
+      "name": "Tools & Tool Assignments",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/tools", "host": ["{{baseUrl}}"], "path": ["api", "tools"] } }, "name": "Get All Tools" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"toolCode\": \"TL-001\",\n  \"name\": \"Drill Machine\",\n  \"categoryId\": 1,\n  \"unitId\": 8,\n  \"toolType\": \"reusable\"\n}" }, "url": { "raw": "{{baseUrl}}/api/tools", "host": ["{{baseUrl}}"], "path": ["api", "tools"] } }, "name": "Create Tool", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('toolId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"toolId\": \"{{toolId}}\",\n  \"locationId\": \"{{locationId}}\",\n  \"availableQuantity\": 10,\n  \"unitId\": 8\n}" }, "url": { "raw": "{{baseUrl}}/api/tools/stock", "host": ["{{baseUrl}}"], "path": ["api", "tools", "stock"] } }, "name": "Add Tool Stock" },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"assignmentNumber\": \"ASG-001\",\n  \"toolId\": \"{{toolId}}\",\n  \"employeeId\": 1,\n  \"locationId\": \"{{locationId}}\",\n  \"quantity\": 3,\n  \"assignedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/tool-assignments", "host": ["{{baseUrl}}"], "path": ["api", "tool-assignments"] } }, "name": "Create Tool Assignment", "event": [{ "listen": "test", "script": { "exec": ["const j=pm.response.json(); if(j.id){pm.collectionVariables.set('toolAssignmentId',j.id);}"], "type": "text/javascript" } }] },
+        { "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"returnedQuantity\": 3,\n  \"returnCondition\": \"good\",\n  \"receivedBy\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/tool-assignments/{{toolAssignmentId}}/returns", "host": ["{{baseUrl}}"], "path": ["api", "tool-assignments", "{{toolAssignmentId}}", "returns"] } }, "name": "Return Tool" }
+      ]
+    },
+    {
+      "name": "Inventory Notification Rules",
+      "item": [
+        { "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/api/inventory-notification-rules", "host": ["{{baseUrl}}"], "path": ["api", "inventory-notification-rules"] } }, "name": "Get All Notification Rules" },
+        { "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"id\": 1,\n  \"isActive\": true,\n  \"thresholdPercentage\": 10\n}" }, "url": { "raw": "{{baseUrl}}/api/inventory-notification-rules/{{notificationId}}", "host": ["{{baseUrl}}"], "path": ["api", "inventory-notification-rules", "{{notificationId}}"] } }, "name": "Update Notification Rule" }
+      ]
+    }
+  ]
+}
