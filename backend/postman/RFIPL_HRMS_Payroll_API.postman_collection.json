@@ -1,0 +1,1499 @@
+{
+  "info": {
+    "_postman_id": "9a8b7c6d-5e4f-4a3b-9c2d-1f0e19283746",
+    "name": "RFIPL HRMS & Payroll API",
+    "description": "Postman collection for testing the RFIPL HRMS & Payroll module.\n\nSETUP:\n1. Import this file (File > Import)\n2. baseUrl variable defaults to http://localhost:5000\n3. Ensure sql/hrms and payroll.sql is imported and server running (npm run test)\n4. WORKFLOW: Run 'Auth > Register' then 'Auth > Login' first. Login auto-saves your accessToken + refreshToken as collection variables. All other requests use Authorization: Bearer {{accessToken}} automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "userId", "value": "1" },
+    { "key": "roleId", "value": "1" },
+    { "key": "permissionId", "value": "1" },
+    { "key": "shiftId", "value": "1" },
+    { "key": "holidayId", "value": "1" },
+    { "key": "attendanceId", "value": "1" },
+    { "key": "correctionId", "value": "1" },
+    { "key": "overtimeId", "value": "1" },
+    { "key": "leaveTypeId", "value": "1" },
+    { "key": "leaveRequestId", "value": "1" },
+    { "key": "salaryComponentId", "value": "1" },
+    { "key": "statutoryConfigId", "value": "1" },
+    { "key": "salaryStructureMasterId", "value": "1" },
+    { "key": "bonusId", "value": "1" },
+    { "key": "payrollPeriodId", "value": "1" },
+    { "key": "payrollId", "value": "1" },
+    { "key": "payslipId", "value": "1" },
+    { "key": "expenseCategoryId", "value": "1" },
+    { "key": "expenseClaimId", "value": "1" },
+    { "key": "dailyReportId", "value": "1" },
+    { "key": "cycleId", "value": "1" },
+    { "key": "kpiId", "value": "1" },
+    { "key": "employeeKpiId", "value": "1" },
+    { "key": "performanceReviewId", "value": "1" },
+    { "key": "notificationId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@rfipl.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@rfipl.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }",
+                  "if (json.user && json.user.id) { pm.collectionVariables.set('userId', json.user.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Admin@123\",\n  \"newPassword\": \"NewPass@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@rfipl.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Company Settings",
+      "item": [
+        {
+          "name": "Get Company Settings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/company-settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company-settings"]
+            }
+          }
+        },
+        {
+          "name": "Create/Update Company Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"RFIPL Pvt Ltd\",\n  \"email\": \"hr@rfipl.com\",\n  \"phone\": \"9876543210\",\n  \"address\": \"123 Industrial Area\",\n  \"gstNumber\": \"GSTIN123\",\n  \"panNumber\": \"PAN123\",\n  \"timezone\": \"Asia/Kolkata\",\n  \"currencyCode\": \"INR\",\n  \"currencySymbol\": \"₹\",\n  \"attendanceRadiusMeters\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/company-settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company-settings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users & Roles & Permissions",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Payroll Admin\",\n  \"description\": \"Manages payroll processing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('roleId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"payroll.generate\",\n  \"module\": \"payroll\",\n  \"description\": \"Can generate payroll\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "permissions"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('permissionId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign Role to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"roleId\": \"{{roleId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user-roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user-roles"]
+            }
+          }
+        },
+        {
+          "name": "Assign Permission to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": \"{{roleId}}\",\n  \"permissionId\": \"{{permissionId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/role-permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "role-permissions"]
+            }
+          }
+        },
+        {
+          "name": "Get User Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/user-roles/user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user-roles", "user", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shifts & Holidays",
+      "item": [
+        {
+          "name": "Create Shift",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General\",\n  \"startTime\": \"09:00:00\",\n  \"endTime\": \"18:00:00\",\n  \"gracePeriodMinutes\": 15,\n  \"weekOffDays\": [0]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shifts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shifts"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('shiftId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Shifts",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/shifts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shifts"]
+            }
+          }
+        },
+        {
+          "name": "Create Holiday",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Independence Day\",\n  \"holidayDate\": \"2024-08-15\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/holidays",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "holidays"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('holidayId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Holidays",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/holidays",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "holidays"]
+            }
+          }
+        },
+        {
+          "name": "Get Attendance Rules",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance-rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance-rules"]
+            }
+          }
+        },
+        {
+          "name": "Update Attendance Rules",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lateHalfDayThreshold\": 3,\n  \"lateFullDayThreshold\": 5,\n  \"autoAbsentEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance-rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance-rules"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        {
+          "name": "Create Attendance Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"shiftId\": \"{{shiftId}}\",\n  \"attendanceDate\": \"2024-08-01\",\n  \"checkInAt\": \"2024-08-01 09:05:00\",\n  \"checkOutAt\": \"2024-08-01 18:00:00\",\n  \"status\": \"present\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('attendanceId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Attendance",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance?employeeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance"],
+              "query": [{ "key": "employeeId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Correction Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"attendanceId\": \"{{attendanceId}}\",\n  \"correctionType\": \"wrong_checkout\",\n  \"requestedCheckOutAt\": \"2024-08-01 19:00:00\",\n  \"reason\": \"Forgot to punch out\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance-corrections",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance-corrections"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('correctionId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Review Correction",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\",\n  \"reviewRemarks\": \"OK\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance-corrections/{{correctionId}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendance-corrections", "{{correctionId}}", "review"]
+            }
+          }
+        },
+        {
+          "name": "Create Overtime Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"attendanceId\": \"{{attendanceId}}\",\n  \"overtimeDate\": \"2024-08-01\",\n  \"overtimeMinutes\": 60,\n  \"hourlyRate\": 200,\n  \"source\": \"after_shift\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('overtimeId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve Overtime",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime/{{overtimeId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime", "{{overtimeId}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Get All Overtime",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/overtime?employeeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "overtime"],
+              "query": [{ "key": "employeeId", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leaves",
+      "item": [
+        {
+          "name": "Get All Leave Types",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/leave-types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "leave-types"]
+            }
+          }
+        },
+        {
+          "name": "Create Leave Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Casual Leave\",\n  \"code\": \"CL\",\n  \"annualLimit\": 6,\n  \"isPaid\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/leave-types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "leave-types"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('leaveTypeId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Leave Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"leaveTypeId\": \"{{leaveTypeId}}\",\n  \"fromDate\": \"2024-08-10\",\n  \"toDate\": \"2024-08-11\",\n  \"totalDays\": 2,\n  \"reason\": \"Personal work\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/leave-requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "leave-requests"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('leaveRequestId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Review Leave Request",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\",\n  \"reviewRemarks\": \"Approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/leave-requests/{{leaveRequestId}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "leave-requests", "{{leaveRequestId}}", "review"]
+            }
+          }
+        },
+        {
+          "name": "Get All Leave Requests",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/leave-requests?employeeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "leave-requests"],
+              "query": [{ "key": "employeeId", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Salary",
+      "item": [
+        {
+          "name": "Create Salary Component",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Basic\",\n  \"code\": \"BASIC\",\n  \"componentType\": \"earning\",\n  \"calculationType\": \"percentage\",\n  \"isTaxable\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-components",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-components"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('salaryComponentId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Salary Components",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-components",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-components"]
+            }
+          }
+        },
+        {
+          "name": "Create Statutory Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"EPF\",\n  \"componentCode\": \"PF\",\n  \"calculationType\": \"percentage\",\n  \"rate\": 12,\n  \"effectiveFrom\": \"2024-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/statutory-configs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "statutory-configs"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('statutoryConfigId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Salary Structure (Master)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Monthly Salary Structure\",\n  \"description\": \"Standard monthly structure\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures-master",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures-master"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('salaryStructureMasterId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add Component to Structure",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salaryComponentId\": \"{{salaryComponentId}}\",\n  \"calculationType\": \"percentage\",\n  \"percentage\": 40\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/salary-structures-master/{{salaryStructureMasterId}}/components",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "salary-structures-master", "{{salaryStructureMasterId}}", "components"]
+            }
+          }
+        },
+        {
+          "name": "Create Bonus/Incentive",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"type\": \"bonus\",\n  \"amount\": 5000,\n  \"applicableMonth\": \"2024-08-01\",\n  \"reason\": \"Performance bonus\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bonus-incentives",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bonus-incentives"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('bonusId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve Bonus/Incentive",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bonus-incentives/{{bonusId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bonus-incentives", "{{bonusId}}", "approve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payroll",
+      "item": [
+        {
+          "name": "Create Payroll Period",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"August 2024\",\n  \"monthNumber\": 8,\n  \"yearNumber\": 2024,\n  \"startDate\": \"2024-08-01\",\n  \"endDate\": \"2024-08-31\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payroll-periods",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payroll-periods"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('payrollPeriodId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Payroll Periods",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/payroll-periods",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payroll-periods"]
+            }
+          }
+        },
+        {
+          "name": "Create Payroll",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payrollPeriodId\": \"{{payrollPeriodId}}\",\n  \"employeeId\": 1,\n  \"totalCalendarDays\": 31,\n  \"payableDays\": 30,\n  \"absentDays\": 1,\n  \"grossEarnings\": 50000,\n  \"totalDeductions\": 8000,\n  \"netSalary\": 42000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payroll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payroll"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('payrollId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Payrolls",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/payroll?payrollPeriodId={{payrollPeriodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payroll"],
+              "query": [{ "key": "payrollPeriodId", "value": "{{payrollPeriodId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Add Payroll Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"componentName\": \"Basic\",\n  \"componentType\": \"earning\",\n  \"calculatedAmount\": 20000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payroll/{{payrollId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payroll", "{{payrollId}}", "items"]
+            }
+          }
+        },
+        {
+          "name": "Create Payslip",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payrollId\": \"{{payrollId}}\",\n  \"payslipNumber\": \"PSL-2024-08-001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payslips",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payslips"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('payslipId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Payslips",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/payslips",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payslips"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "Get Expense Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/expense-categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "expense-categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Expense Claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"expenseCategoryId\": 1,\n  \"expenseDate\": \"2024-08-05\",\n  \"amount\": 1200,\n  \"description\": \"Client meeting travel\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/expense-claims",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "expense-claims"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('expenseClaimId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Review Expense Claim",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\",\n  \"approvalLevel\": \"manager\",\n  \"remarks\": \"Approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/expense-claims/{{expenseClaimId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "expense-claims", "{{expenseClaimId}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Get All Expense Claims",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/expense-claims?employeeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "expense-claims"],
+              "query": [{ "key": "employeeId", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Daily Reports",
+      "item": [
+        {
+          "name": "Create Daily Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"reportDate\": \"2024-08-05\",\n  \"workSummary\": \"Completed production QA\",\n  \"hoursWorked\": 8\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-reports",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-reports"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('dailyReportId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit Daily Report",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-reports/{{dailyReportId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-reports", "{{dailyReportId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Review Daily Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reviewerId\": 2,\n  \"status\": \"approved\",\n  \"remarks\": \"Good work\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-reports/{{dailyReportId}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-reports", "{{dailyReportId}}", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get All Daily Reports",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/daily-reports?employeeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "daily-reports"],
+              "query": [{ "key": "employeeId", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Performance",
+      "item": [
+        {
+          "name": "Create Review Cycle",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Q3 2024\",\n  \"periodType\": \"quarterly\",\n  \"startDate\": \"2024-07-01\",\n  \"endDate\": \"2024-09-30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/performance/cycles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "performance", "cycles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('cycleId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create KPI",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Units Produced\",\n  \"unit\": \"units\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/performance/kpis",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "performance", "kpis"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('kpiId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign KPI to Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"kpiId\": \"{{kpiId}}\",\n  \"reviewCycleId\": \"{{cycleId}}\",\n  \"targetValue\": 1000,\n  \"weightage\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/performance/employee-kpis",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "performance", "employee-kpis"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('employeeKpiId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Performance Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": 1,\n  \"reviewCycleId\": \"{{cycleId}}\",\n  \"selfAssessment\": \"Good quarter\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/performance/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "performance", "reviews"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('performanceReviewId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Performance Review",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"manager_reviewed\",\n  \"managerReview\": \"Great performer\",\n  \"finalScore\": 4.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/performance/reviews/{{performanceReviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "performance", "reviews", "{{performanceReviewId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications & Audit",
+      "item": [
+        {
+          "name": "Get My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notifications"]
+            }
+          }
+        },
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"title\": \"Payroll Ready\",\n  \"message\": \"Your payslip for Aug 2024 is ready\",\n  \"type\": \"payroll\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notifications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('notificationId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/{{notificationId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notifications", "{{notificationId}}", "read"]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/audit-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "audit-logs"]
+            }
+          }
+        },
+        {
+          "name": "Create Audit Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"CREATE\",\n  \"module\": \"payroll\",\n  \"recordId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/audit-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "audit-logs"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

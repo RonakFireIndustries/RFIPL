@@ -1,0 +1,53 @@
+.wrapper {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eef2f6;
+}
+
+.map {
+  width: 100%;
+  height: 320px;
+}
+
+.locateBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 500;
+  padding: 7px 14px;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.locateBtn:hover { border-color: #D4AF37; color: #D4AF37; }
+
+.locateBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.pin {
+  width: 22px;
+  height: 22px;
+  background: #D4AF37;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.pin::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
