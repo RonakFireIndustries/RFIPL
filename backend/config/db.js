@@ -12,7 +12,11 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    // Set DB_SSL=true when the remote MySQL server requires an SSL connection.
+    ...(process.env.DB_SSL === "true"
+        ? { ssl: { rejectUnauthorized: false } }
+        : {}),
 });
 
 const connectDB = async () => {
