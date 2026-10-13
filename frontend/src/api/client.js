@@ -1,4 +1,11 @@
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// VITE_API_URL may be set to either the bare backend origin
+// (e.g. https://rfipl-backend.vercel.app) or the full API path
+// (e.g. https://rfipl-backend.vercel.app/api). Normalize so the
+// request always ends up at <origin>/api.
+const RAW_API_URL = import.meta.env.VITE_API_URL || '/api';
+const BASE_URL = RAW_API_URL.replace(/\/+$/, '').endsWith('/api')
+  ? RAW_API_URL.replace(/\/+$/, '')
+  : `${RAW_API_URL.replace(/\/+$/, '')}/api`;
 
 function normalizeKeys(value) {
   if (Array.isArray(value)) return value.map(normalizeKeys);
