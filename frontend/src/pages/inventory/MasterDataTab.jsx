@@ -28,21 +28,12 @@ const INV_TYPES = [
 
 function TabBar({ tabs, current, onChange }) {
   return (
-    <div className={styles.tabs} style={{ display: 'flex', gap: 4, borderBottom: '1px solid #e5e7eb', marginBottom: 16 }}>
+    <div className={styles.tabs}>
       {tabs.map((t) => (
         <button
           key={t.key}
           onClick={() => onChange(t.key)}
-          style={{
-            padding: '8px 16px',
-            background: 'none',
-            border: 'none',
-            borderBottom: `2px solid ${current === t.key ? '#D4AF37' : 'transparent'}`,
-            color: current === t.key ? '#D4AF37' : '#6b7280',
-            fontWeight: current === t.key ? 600 : 500,
-            fontSize: 13.5,
-            cursor: 'pointer',
-          }}
+          className={`${styles.tab} ${current === t.key ? styles.tabActive : ''}`}
         >
           {t.label}
         </button>

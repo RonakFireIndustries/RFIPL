@@ -16,12 +16,10 @@ export default function Dashboard() {
   const { success } = useInteractions();
 
   return (
-    <div>
-      <h1 style={{ margin: '0 0 8px', fontSize: '24px', fontWeight: 600, color: '#111111' }}>
-        Dashboard
-      </h1>
-      <p style={{ color: '#6b7280', fontSize: '14px' }}>
-        Welcome to RFIPL HRMS & Inventory Management System — jump straight into work.
+    <div className={styles.page}>
+      <h1 className={styles.title}>Dashboard</h1>
+      <p className={styles.subtitle}>
+        Welcome to RFIPL HRMS &amp; Inventory Management System — jump straight into work.
       </p>
 
       <div className={styles.grid}>
@@ -31,7 +29,7 @@ export default function Dashboard() {
             type="button"
             className={styles.card}
             onClick={() => { navigate(a.to); success(`Opening ${a.label.toLowerCase()}`); }}
-            style={{ '--accent': a.accent }}
+            style={{ '--card-accent': a.accent }}
           >
             <span className={styles.icon}>{a.icon}</span>
             <span className={styles.cardBody}>

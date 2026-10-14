@@ -212,10 +212,10 @@ export default function SalesOrders() {
   ];
 
   return (
-    <div style={{ padding: '24px 28px' }}>
+    <div>
       <div className={styles.pageHeader}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#111111' }}>Sales Orders</h1>
+          <h1 className={styles.pageTitle}>Sales Orders</h1>
           <p className={styles.pageSub}>{data.length} orders</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>

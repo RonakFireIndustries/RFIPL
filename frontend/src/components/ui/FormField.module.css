@@ -1,63 +1,75 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .label {
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-weight: 600;
-  color: #374151;
+  color: var(--gray-700);
 }
 
 .required {
-  color: #DC2626;
+  color: var(--danger);
+  margin-left: 2px;
 }
 
 .input {
-  padding: 8px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #111827;
-  background: #fff;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: var(--fs-base);
+  color: var(--gray-900);
+  background: var(--surface);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
   font-family: inherit;
+  width: 100%;
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--border-strong);
 }
 
 .input:focus {
-  border-color: #D4AF37;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
 }
 
 .input::placeholder {
-  color: #9ca3af;
+  color: var(--faint);
 }
 
 .textarea {
   resize: vertical;
-  min-height: 60px;
+  min-height: 64px;
 }
 
 select.input {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 30px;
+  background-position: right 11px center;
+  padding-right: 32px;
+  cursor: pointer;
 }
 
 .errorInput {
-  border-color: #DC2626;
+  border-color: var(--danger);
+}
+
+.errorInput:focus {
+  box-shadow: var(--ring-danger);
 }
 
 .errorText {
-  font-size: 12px;
-  color: #DC2626;
+  font-size: var(--fs-sm);
+  color: var(--danger);
 }
 
 .input:disabled {
-  background: #f3f4f6;
+  background: var(--surface-sunken);
+  color: var(--faint);
   cursor: not-allowed;
 }

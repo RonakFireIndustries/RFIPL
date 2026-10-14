@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState, useEffect } from 'react';
 import { getInventoryCategories, getInventoryUnits, getSuppliers } from '@/api/inventory';
+import styles from '@/pages/ModulePage.module.css';
 
 export function useMasterData(accessToken, categoryType) {
   const [units, setUnits] = useState([]);
@@ -24,21 +25,12 @@ export function useMasterData(accessToken, categoryType) {
 
 export function TabBar({ tabs, current, onChange }) {
   return (
-    <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #e5e7eb', marginBottom: 16, flexWrap: 'wrap' }}>
+    <div className={styles.tabs}>
       {tabs.map((t) => (
         <button
           key={t.key}
           onClick={() => onChange(t.key)}
-          style={{
-            padding: '8px 16px',
-            background: 'none',
-            border: 'none',
-            borderBottom: `2px solid ${current === t.key ? '#D4AF37' : 'transparent'}`,
-            color: current === t.key ? '#D4AF37' : '#6b7280',
-            fontWeight: current === t.key ? 600 : 500,
-            fontSize: 13.5,
-            cursor: 'pointer',
-          }}
+          className={`${styles.tab} ${current === t.key ? styles.tabActive : ''}`}
         >
           {t.label}
         </button>
@@ -48,12 +40,12 @@ export function TabBar({ tabs, current, onChange }) {
 }
 
 export const inputStyle = {
-  padding: '8px 10px',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-  fontSize: 13,
-  color: '#374151',
-  background: '#fff',
+  padding: '9px 11px',
+  border: '1px solid var(--border)',
+  borderRadius: 'var(--r-md)',
+  fontSize: 'var(--fs-md)',
+  color: 'var(--gray-700)',
+  background: 'var(--surface)',
   width: '100%',
   boxSizing: 'border-box',
   outline: 'none',
@@ -67,9 +59,9 @@ export function ItemRowsEditor({ columns, rows, onChange, newRow, addLabel = '+ 
   const add = () => onChange([...rows, newRow()]);
 
   return (
-    <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, background: '#fafafa' }}>
+    <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 12, background: 'var(--surface-alt)' }}>
       {rows.length === 0 && (
-        <p style={{ color: '#9ca3af', fontSize: 13, margin: '0 0 10px' }}>No items added yet.</p>
+        <p style={{ color: 'var(--faint)', fontSize: 13, margin: '0 0 10px' }}>No items added yet.</p>
       )}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {rows.map((row, i) => (
@@ -80,9 +72,9 @@ export function ItemRowsEditor({ columns, rows, onChange, newRow, addLabel = '+ 
               gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr)) 32px`,
               gap: 8,
               alignItems: 'end',
-              backgroundColor: '#fff',
-              border: '1px solid #f3f4f6',
-              borderRadius: 8,
+              backgroundColor: 'var(--surface)',
+              border: '1px solid var(--gray-100)',
+              borderRadius: 'var(--r-md)',
               padding: 8,
             }}
           >
@@ -90,7 +82,7 @@ export function ItemRowsEditor({ columns, rows, onChange, newRow, addLabel = '+ 
               const opts = typeof c.options === 'function' ? c.options(row, rows) : c.options;
               return (
                 <div key={c.key} style={rowGutter}>
-                  <label style={{ fontSize: 11.5, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: 11.5, color: 'var(--muted)', display: 'block', marginBottom: 4 }}>
                     {c.label}
                   </label>
                   {c.type === 'select' ? (
@@ -123,10 +115,10 @@ export function ItemRowsEditor({ columns, rows, onChange, newRow, addLabel = '+ 
               style={{
                 height: 34,
                 width: 32,
-                border: '1px solid #e5e7eb',
-                borderRadius: 6,
-                background: '#fff',
-                color: '#DC2626',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--r-sm)',
+                background: 'var(--surface)',
+                color: 'var(--danger)',
                 cursor: 'pointer',
                 fontSize: 16,
                 lineHeight: 1,
@@ -143,10 +135,10 @@ export function ItemRowsEditor({ columns, rows, onChange, newRow, addLabel = '+ 
         style={{
           marginTop: 10,
           padding: '6px 14px',
-          border: '1px solid #D4AF37',
-          borderRadius: 8,
-          background: '#fff',
-          color: '#D4AF37',
+          border: '1px solid var(--accent)',
+          borderRadius: 'var(--r-md)',
+          background: 'var(--surface)',
+          color: 'var(--accent-strong)',
           fontWeight: 600,
           fontSize: 12.5,
           cursor: 'pointer',

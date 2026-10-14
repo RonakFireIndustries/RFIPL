@@ -1,60 +1,71 @@
 .toastHost {
   position: fixed;
-  bottom: 18px;
-  right: 18px;
+  bottom: 20px;
+  right: 20px;
   z-index: 1100;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 360px;
+  max-width: 380px;
+  width: calc(100vw - 32px);
+  pointer-events: none;
 }
 
 .toast {
-  padding: 12px 16px;
-  border-radius: 8px;
+  pointer-events: auto;
+  padding: 13px 16px;
+  border-radius: var(--r-md);
   color: #fff;
-  font-size: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: var(--shadow-lg);
   cursor: pointer;
+  border-left: 4px solid rgba(255, 255, 255, 0.55);
   animation: slideIn 0.18s ease-out;
 }
 
-.info    { background: #1d4ed8; }
-.success { background: #15803d; }
-.warn    { background: #b45309; }
-.error   { background: #b91c1c; }
+.info    { background: var(--info); }
+.success { background: var(--success); }
+.warn    { background: var(--warning); }
+.error   { background: var(--danger); }
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.55);
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1200;
+  padding: 20px;
+  animation: fadeIn 0.15s ease-out;
 }
 
 .dialog {
-  background: #fff;
-  border-radius: 10px;
+  background: var(--surface);
+  border-radius: var(--r-xl);
   padding: 22px 24px;
   width: 420px;
   max-width: 92vw;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: popIn 0.16s ease-out;
 }
 
 .dialogTitle {
   margin: 0 0 10px;
-  font-size: 17px;
-  font-weight: 600;
-  color: #111827;
+  font-size: var(--fs-xl);
+  font-weight: 650;
+  color: var(--text-h);
 }
 
 .dialogMsg {
   margin: 0 0 20px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   line-height: 1.5;
-  color: #4b5563;
+  color: var(--gray-600);
   white-space: pre-wrap;
 }
 
@@ -67,37 +78,54 @@
 .cancelBtn,
 .confirmBtn,
 .dangerBtn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 9px 17px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-base);
+  font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+  transition: all var(--t-fast);
 }
 
 .cancelBtn {
-  background: #fff;
-  color: #374151;
-  border-color: #d1d5db;
+  background: var(--surface);
+  color: var(--gray-700);
+  border-color: var(--border-strong);
 }
 
-.cancelBtn:hover { background: #f3f4f6; }
+.cancelBtn:hover {
+  background: var(--surface-alt);
+}
 
 .confirmBtn {
-  background: #2563eb;
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
-.confirmBtn:hover { background: #1d4ed8; }
+.confirmBtn:hover {
+  background: var(--accent-hover);
+}
 
 .dangerBtn {
-  background: #dc2626;
+  background: var(--danger);
   color: #fff;
 }
 
-.dangerBtn:hover { background: #b91c1c; }
+.dangerBtn:hover {
+  background: var(--danger-hover);
+}
 
 @keyframes slideIn {
-  from { transform: translateY(8px); opacity: 0; }
+  from { transform: translateY(10px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }

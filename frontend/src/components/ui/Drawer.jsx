@@ -19,7 +19,7 @@ export default function Drawer({ isOpen, onClose, title, children, width = 500 }
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`} style={{ width }} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.drawer} style={{ width }} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h3 className={styles.title}>{title}</h3>
           <button className={styles.closeBtn} onClick={onClose}>&times;</button>

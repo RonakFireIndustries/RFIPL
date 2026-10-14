@@ -1,8 +1,9 @@
 .tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   margin-bottom: 20px;
+  overflow-x: auto;
 }
 
 .tab {
@@ -10,18 +11,22 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
-  color: #6b7280;
+  color: var(--muted);
   cursor: pointer;
   margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color var(--t-fast), border-color var(--t-fast);
 }
 
-.tab:hover { color: #D4AF37; }
+.tab:hover {
+  color: var(--accent-strong);
+}
 
 .tabActive {
-  color: #D4AF37;
-  border-bottom-color: #D4AF37;
+  color: var(--accent-strong);
+  border-bottom-color: var(--accent);
   font-weight: 600;
 }
 
