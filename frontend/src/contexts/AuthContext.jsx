@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
-import { loginUser, registerUser, getMe, refreshToken, logoutUser } from '@/api/auth';
+import { loginUser, getMe, refreshToken, logoutUser } from '@/api/auth';
 
 export const AuthContext = createContext(null);
 
@@ -64,14 +64,6 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const register = async (email, password) => {
-    const data = await registerUser(email, password);
-    persistTokens(data.accessToken, data.refreshToken);
-    const profile = await getMe(data.accessToken);
-    setUser(profile);
-    return data;
-  };
-
   const logout = async () => {
     try {
       if (refreshTokenValue) await logoutUser(refreshTokenValue);
@@ -83,7 +75,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, accessToken, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

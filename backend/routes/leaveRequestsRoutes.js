@@ -152,7 +152,11 @@ router.get("/", async (req, res) => {
 
 router.get("/mine", async (req, res) => {
     try {
-        const emp = await currentEmployee(req.user.id);
+        const emp = await resolveEmployeeByUser(req.user.id);
+        if (!emp) {
+            // Admin/logins without an employee profile have no personal leave requests.
+            return res.json([]);
+        }
         const [requests] = await pool.query(
             `SELECT lr.*, lt.name AS leaveTypeName, lt.code AS leaveTypeCode,
                     rm.firstName AS managerFirstName, rm.lastName AS managerLastName
@@ -166,26 +170,31 @@ router.get("/mine", async (req, res) => {
         res.json(requests);
     } catch (error) {
         console.error("Error fetching my leave requests:", error);
-        res.status(500).json({ message: "Error fetching my leave requests", error: error.message });
+        res.status(error.statusCode || 500).json({ message: "Error fetching my leave requests", error: error.message });
     }
 });
 
 router.get("/balance", async (req, res) => {
     try {
-        const emp = await currentEmployee(req.user.id);
+        const emp = await resolveEmployeeByUser(req.user.id);
         const year = Number(req.query.year) || new Date().getFullYear();
+        if (!emp) {
+            // Admin/logins without an employee profile have no personal balances.
+            return res.json({ employeeId: null, year, balances: [] });
+        }
         const balances = await getBalances(emp.id, year);
         res.json({ employeeId: emp.id, year, balances });
     } catch (error) {
         console.error("Error fetching leave balance:", error);
-        res.status(500).json({ message: "Error fetching leave balance", error: error.message });
+        res.status(error.statusCode || 500).json({ message: "Error fetching leave balance", error: error.message });
     }
 });
 
 router.get("/approvals", async (req, res) => {
     try {
-        const emp = await currentEmployee(req.user.id);
         const admin = await isAdminUser(req.user.id);
+        // Admins can review the queue without being linked to an employee.
+        const emp = admin ? null : await currentEmployee(req.user.id);
         const { status } = req.query;
         let query = `
             SELECT lr.*, lt.name AS leaveTypeName, lt.code AS leaveTypeCode,
@@ -206,7 +215,7 @@ router.get("/approvals", async (req, res) => {
         res.json({ requests, isAdmin: admin });
     } catch (error) {
         console.error("Error fetching approval queue:", error);
-        res.status(500).json({ message: "Error fetching approval queue", error: error.message });
+        res.status(error.statusCode || 500).json({ message: "Error fetching approval queue", error: error.message });
     }
 });
 
@@ -324,8 +333,9 @@ router.put("/:id", async (req, res) => {
 
 router.patch("/:id/review", async (req, res) => {
     try {
-        const emp = await currentEmployee(req.user.id);
         const admin = await isAdminUser(req.user.id);
+        // Admins can review without an employee profile; managers must be linked.
+        const emp = admin ? await resolveEmployeeByUser(req.user.id) : await currentEmployee(req.user.id);
         const { status, reviewRemarks } = req.body;
         if (!["approved", "rejected"].includes(status)) {
             throw new Error("Review status must be approved or rejected");
@@ -358,7 +368,7 @@ router.patch("/:id/review", async (req, res) => {
 
         await pool.query(
             `UPDATE leave_requests SET status = ?, reviewRemarks = ?, reviewedBy = ?, reviewedAt = NOW() WHERE id = ?`,
-            [status, reviewRemarks || null, emp.id, req.params.id]
+            [status, reviewRemarks || null, emp ? emp.id : null, req.params.id]
         );
         const [updatedRequest] = await pool.query("SELECT * FROM leave_requests WHERE id = ?", [req.params.id]);
         res.json(updatedRequest[0]);
@@ -370,8 +380,8 @@ router.patch("/:id/review", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     try {
-        const emp = await currentEmployee(req.user.id);
         const admin = await isAdminUser(req.user.id);
+        const emp = admin ? null : await currentEmployee(req.user.id);
         const [requests] = await pool.query("SELECT * FROM leave_requests WHERE id = ?", [req.params.id]);
         if (requests.length === 0) {
             return res.status(404).json({ message: "Leave request not found" });

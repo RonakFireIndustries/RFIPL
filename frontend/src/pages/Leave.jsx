@@ -121,6 +121,7 @@ export default function Leave() {
   useEffect(() => { if (tab === 'requests') loadAll(); }, [tab, loadAll]);
 
   const selectedBalance = balance?.balances?.find((b) => b.leaveTypeId === Number(applyForm.leaveTypeId));
+  const noEmployee = !!balance && balance.employeeId === null;
 
   const openApply = () => {
     setApplyForm(emptyApply());
@@ -276,9 +277,16 @@ export default function Leave() {
               <section className={styles.card}>
                 <div className={styles.cardTitleRow}>
                   <h3 className={styles.cardTitle}>Leave Balance</h3>
-                  <button className={styles.primaryBtn} onClick={openApply}>+ Apply Leave</button>
+                  {!noEmployee && (
+                    <button className={styles.primaryBtn} onClick={openApply}>+ Apply Leave</button>
+                  )}
                 </div>
-                {!balance?.balances?.length ? (
+                {noEmployee ? (
+                  <p className={styles.empty}>
+                    Your login is not linked to an employee profile, so personal leave balance is not available.
+                    Use Approvals, All Requests or Leave Types to manage leave.
+                  </p>
+                ) : !balance?.balances?.length ? (
                   <p className={styles.empty}>No leave types configured. Contact your admin.</p>
                 ) : (
                   <div className={styles.balanceGrid}>

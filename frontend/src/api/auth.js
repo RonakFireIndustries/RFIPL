@@ -4,10 +4,6 @@ export function loginUser(email, password) {
   return apiClient('POST', '/auth/login', { email, password });
 }
 
-export function registerUser(email, password) {
-  return apiClient('POST', '/auth/register', { email, password });
-}
-
 export function getMe(token) {
   return apiClient('GET', '/auth/me', null, token);
 }

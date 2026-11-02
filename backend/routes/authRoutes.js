@@ -21,41 +21,7 @@ const issueTokens = async (user, res) => {
     return { accessToken, refreshToken };
 };
 
-router.post("/register", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const passwordHash = await hashPassword(password);
-        const [result] = await pool.query(
-            "INSERT INTO users (email, passwordHash) VALUES (?, ?)",
-            [email, passwordHash]
-        );
-
-        const [matched] = await pool.query(
-            "SELECT id FROM employees WHERE personalEmail = ? AND employmentStatus = 'active' AND deletedAt IS NULL AND userId IS NULL ORDER BY id DESC LIMIT 1",
-            [email]
-        );
-        if (matched.length > 0) {
-            await pool.query(
-                "UPDATE employees SET userId = ? WHERE id = ?",
-                [result.insertId, matched[0].id]
-            );
-        }
-        const [users] = await pool.query(
-            "SELECT id, email, isActive FROM users WHERE id = ?",
-            [result.insertId]
-        );
-        const user = users[0];
-        const { accessToken, refreshToken } = await issueTokens(user, res);
-        res.status(201).json({ message: "User registered", user, accessToken, refreshToken });
-    } catch (error) {
-        console.error("Error registering user:", error);
-        if (error.code === "ER_DUP_ENTRY") {
-            return res.status(409).json({ message: "Email already exists" });
-        }
-        res.status(500).json({ message: "Error registering user", error: error.message });
-    }
-});
-
+// Public self-registration is disabled. Admins create users via /api/users.
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;

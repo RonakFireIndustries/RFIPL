@@ -67,9 +67,6 @@ export default function Login() {
             {submitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <div className={styles.footer}>
-          Don&apos;t have an account? <Link to="/register">Sign Up</Link>
-        </div>
       </div>
     </div>
   );
