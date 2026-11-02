@@ -1,5 +1,5 @@
-/* Shared page shell used by Departments, Designations, Inventory tabs,
-   Purchasing, Production, Sales/Purchase Orders, Payroll tabs, EmployeeForm. */
+/* Shared page shell used by Departments, Designations, Payroll tabs,
+   EmployeeDetail and EmployeeForm. */
 
 .pageHeader {
   display: flex;

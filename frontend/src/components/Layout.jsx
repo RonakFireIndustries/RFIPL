@@ -25,17 +25,6 @@ const NAV_SECTIONS = [
     ],
   },
   {
-    title: 'Inventory',
-    items: [
-      { to: '/inventory/raw-materials', label: 'Raw Material', icon: 'package' },
-      { to: '/inventory/machines-tools', label: 'Machine & Tools', icon: 'wrench' },
-      { to: '/inventory/finished-products', label: 'Finished Products', icon: 'boxes' },
-      { to: '/inventory/movements', label: 'Movements', icon: 'arrowsLeftRight' },
-      { to: '/purchase-orders', label: 'Purchase Orders', icon: 'cart' },
-      { to: '/sales-orders', label: 'Sales Orders', icon: 'receipt' },
-    ],
-  },
-  {
     title: 'Account',
     items: [{ to: '/settings', label: 'Settings', icon: 'settings' }],
   },

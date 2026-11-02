@@ -16,13 +16,6 @@ import MyAttendance from '@/pages/MyAttendance';
 import Leave from '@/pages/Leave';
 import WorkLocations from '@/pages/WorkLocations';
 import Payroll from '@/pages/Payroll';
-import RawMaterialPage from '@/pages/RawMaterialPage';
-import MachinesToolsPage from '@/pages/MachinesToolsPage';
-import FinishedProductsPage from '@/pages/FinishedProductsPage';
-import MovementsPage from '@/pages/MovementsPage';
-import ItemCreatePage from '@/pages/ItemCreatePage'
-import PurchaseOrders from '@/pages/PurchaseOrders';
-import SalesOrders from '@/pages/SalesOrders';
 
 export default function App() {
   return (
@@ -46,14 +39,6 @@ export default function App() {
               <Route path="/leave" element={<Leave />} />
               <Route path="/locations" element={<WorkLocations />} />
               <Route path="/payroll" element={<Payroll />} />
-              <Route path="/inventory/raw-materials" element={<RawMaterialPage />} />
-              <Route path="/inventory/raw-materials/new" element={<ItemCreatePage isRaw />} />
-              <Route path="/inventory/machines-tools" element={<MachinesToolsPage />} />
-              <Route path="/inventory/finished-products" element={<FinishedProductsPage />} />
-              <Route path="/inventory/finished-products/new" element={<ItemCreatePage isRaw={false} />} />
-              <Route path="/inventory/movements" element={<MovementsPage />} />
-              <Route path="/purchase-orders" element={<PurchaseOrders />} />
-              <Route path="/sales-orders" element={<SalesOrders />} />
             </Route>
           </Route>
 
