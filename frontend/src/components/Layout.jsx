@@ -25,6 +25,21 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    title: 'Inventory',
+    items: [
+      { to: '/inventory', label: 'Overview', icon: 'boxes' },
+      { to: '/inventory/purchasing', label: 'Purchasing & QC', icon: 'clipboardCheck' },
+      { to: '/inventory/production', label: 'Production', icon: 'factory' },
+      { to: '/inventory/raw-materials', label: 'Raw Materials', icon: 'package' },
+      { to: '/inventory/batches', label: 'Batches', icon: 'layers' },
+      { to: '/inventory/stock', label: 'Stock', icon: 'boxes' },
+      { to: '/inventory/ledger', label: 'Ledger', icon: 'receipt' },
+      { to: '/inventory/units', label: 'Units', icon: 'arrowsLeftRight' },
+      { to: '/inventory/categories', label: 'Categories', icon: 'building' },
+      { to: '/inventory/suppliers', label: 'Suppliers', icon: 'cart' },
+    ],
+  },
+  {
     title: 'Account',
     items: [{ to: '/settings', label: 'Settings', icon: 'settings' }],
   },
@@ -84,6 +99,7 @@ export default function Layout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  end={item.to === '/inventory'}
                   onClick={() => setSidebarOpen(false)}
                   className={({ isActive }) =>
                     `${styles.navLink} ${isActive ? styles.active : ''}`

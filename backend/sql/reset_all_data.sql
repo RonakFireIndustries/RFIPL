@@ -2,7 +2,7 @@
 -- RFIPL - FULL DATABASE RESET (DESTRUCTIVE)
 -- ------------------------------------------------------------
 -- Schema: a17590e4_rfipl
--- Wipes every row in every table (100 tables), then seeds only:
+-- Wipes every row in every table (77 base tables), then seeds only:
 --   * Role : Super Admin
 --   * User : admin@rfipl.com / Admin@12345 (bcrypt hash, cost 10)
 --   * Link : admin user -> Super Admin role
@@ -24,16 +24,10 @@ TRUNCATE TABLE bills_of_materials;
 TRUNCATE TABLE bom_items;
 TRUNCATE TABLE bonus_incentives;
 TRUNCATE TABLE company_settings;
-TRUNCATE TABLE customers;
-TRUNCATE TABLE customer_payments;
-TRUNCATE TABLE customer_returns;
-TRUNCATE TABLE customer_return_items;
 TRUNCATE TABLE daily_reports;
 TRUNCATE TABLE daily_report_reviews;
 TRUNCATE TABLE departments;
 TRUNCATE TABLE designations;
-TRUNCATE TABLE dispatches;
-TRUNCATE TABLE dispatch_items;
 TRUNCATE TABLE employees;
 TRUNCATE TABLE employee_bank_details;
 TRUNCATE TABLE employee_documents;
@@ -54,17 +48,11 @@ TRUNCATE TABLE goods_receipts;
 TRUNCATE TABLE goods_receipt_items;
 TRUNCATE TABLE holidays;
 TRUNCATE TABLE inventory_categories;
-TRUNCATE TABLE inventory_damage_loss_reports;
-TRUNCATE TABLE inventory_notification_rules;
 TRUNCATE TABLE inventory_units;
-TRUNCATE TABLE invoices;
-TRUNCATE TABLE invoice_items;
 TRUNCATE TABLE kpis;
 TRUNCATE TABLE leave_balances;
 TRUNCATE TABLE leave_requests;
 TRUNCATE TABLE leave_types;
-TRUNCATE TABLE machines;
-TRUNCATE TABLE machine_breakdowns;
 TRUNCATE TABLE notifications;
 TRUNCATE TABLE overtime_records;
 TRUNCATE TABLE password_reset_tokens;
@@ -97,21 +85,10 @@ TRUNCATE TABLE role_permissions;
 TRUNCATE TABLE salary_components;
 TRUNCATE TABLE salary_structures;
 TRUNCATE TABLE salary_structure_components;
-TRUNCATE TABLE sales_orders;
-TRUNCATE TABLE sales_order_items;
 TRUNCATE TABLE shifts;
 TRUNCATE TABLE shift_week_offs;
 TRUNCATE TABLE statutory_configurations;
-TRUNCATE TABLE stock_adjustments;
-TRUNCATE TABLE stock_adjustment_items;
-TRUNCATE TABLE stock_locations;
-TRUNCATE TABLE stock_transfers;
-TRUNCATE TABLE stock_transfer_items;
 TRUNCATE TABLE suppliers;
-TRUNCATE TABLE tools;
-TRUNCATE TABLE tool_assignments;
-TRUNCATE TABLE tool_returns;
-TRUNCATE TABLE tool_stock;
 TRUNCATE TABLE unit_conversions;
 TRUNCATE TABLE users;
 TRUNCATE TABLE user_roles;

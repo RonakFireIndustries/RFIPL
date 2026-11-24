@@ -16,6 +16,16 @@ import MyAttendance from '@/pages/MyAttendance';
 import Leave from '@/pages/Leave';
 import WorkLocations from '@/pages/WorkLocations';
 import Payroll from '@/pages/Payroll';
+import InventoryOverview from '@/pages/inventory/Overview';
+import InventoryUnits from '@/pages/inventory/Units';
+import InventoryCategories from '@/pages/inventory/Categories';
+import InventorySuppliers from '@/pages/inventory/Suppliers';
+import RawMaterials from '@/pages/inventory/RawMaterials';
+import InventoryBatches from '@/pages/inventory/Batches';
+import InventoryStock from '@/pages/inventory/Stock';
+import InventoryLedger from '@/pages/inventory/Ledger';
+import InventoryPurchasing from '@/pages/inventory/Purchasing';
+import InventoryProduction from '@/pages/inventory/Production';
 
 export default function App() {
   return (
@@ -39,6 +49,17 @@ export default function App() {
               <Route path="/leave" element={<Leave />} />
               <Route path="/locations" element={<WorkLocations />} />
               <Route path="/payroll" element={<Payroll />} />
+
+              <Route path="/inventory" element={<InventoryOverview />} />
+              <Route path="/inventory/units" element={<InventoryUnits />} />
+              <Route path="/inventory/categories" element={<InventoryCategories />} />
+              <Route path="/inventory/suppliers" element={<InventorySuppliers />} />
+              <Route path="/inventory/raw-materials" element={<RawMaterials />} />
+              <Route path="/inventory/batches" element={<InventoryBatches />} />
+              <Route path="/inventory/stock" element={<InventoryStock />} />
+              <Route path="/inventory/ledger" element={<InventoryLedger />} />
+              <Route path="/inventory/purchasing" element={<InventoryPurchasing />} />
+              <Route path="/inventory/production" element={<InventoryProduction />} />
             </Route>
           </Route>
 

@@ -42,7 +42,6 @@ import notificationRoutes from "./routes/notificationsRoutes.js";
 import auditLogRoutes from "./routes/auditLogsRoutes.js";
 import inventoryUnitRoutes from "./routes/inventoryUnitsRoutes.js";
 import inventoryCategoryRoutes from "./routes/inventoryCategoriesRoutes.js";
-import stockLocationRoutes from "./routes/stockLocationsRoutes.js";
 import supplierRoutes from "./routes/suppliersRoutes.js";
 import rawMaterialRoutes from "./routes/rawMaterialsRoutes.js";
 import rawMaterialStockRoutes from "./routes/rawMaterialStockRoutes.js";
@@ -51,21 +50,18 @@ import purchaseOrderRoutes from "./routes/purchaseOrdersRoutes.js";
 import goodsReceiptRoutes from "./routes/goodsReceiptsRoutes.js";
 import qualityInspectionRoutes from "./routes/qualityInspectionsRoutes.js";
 import finishedProductRoutes from "./routes/finishedProductsRoutes.js";
-import billOfMaterialRoutes from "./routes/billsOfMaterialsRoutes.js";
+import bomRoutes from "./routes/billsOfMaterialsRoutes.js";
 import productionOrderRoutes from "./routes/productionOrdersRoutes.js";
-import finishedProductStockRoutes from "./routes/finishedProductStockRoutes.js";
-import customerRoutes from "./routes/customersRoutes.js";
-import salesOrderRoutes from "./routes/salesOrdersRoutes.js";
-import dispatchRoutes from "./routes/dispatchesRoutes.js";
-import invoiceRoutes from "./routes/invoicesRoutes.js";
-import customerReturnRoutes from "./routes/customerReturnsRoutes.js";
-import machineRoutes from "./routes/machinesRoutes.js";
-import toolRoutes from "./routes/toolsRoutes.js";
-import toolAssignmentRoutes from "./routes/toolAssignmentsRoutes.js";
-import stockTransferRoutes from "./routes/stockTransfersRoutes.js";
-import stockAdjustmentRoutes from "./routes/stockAdjustmentsRoutes.js";
-import damageLossRoutes from "./routes/inventoryDamageLossRoutes.js";
-import inventoryNotificationRuleRoutes from "./routes/inventoryNotificationRulesRoutes.js";
+import productionConsumptionRoutes from "./routes/productionConsumptionsRoutes.js";
+import productionWastageRoutes from "./routes/productionWastageRoutes.js";
+import productionOutputRoutes from "./routes/productionOutputsRoutes.js";
+import finishedStockRoutes from "./routes/finishedStockRoutes.js";
+
+// Pending inventory modules (tables not created yet):
+// customers, sales orders, dispatches, invoices, customer returns, machines,
+// tools, tool assignments, stock transfers, stock adjustments, damage/loss
+// reports and notification rules.
+// Stock locations are intentionally unused (single-store design).
 
 dotenv.config();
 
@@ -141,7 +137,6 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/audit-logs", auditLogRoutes);
 app.use("/api/inventory-units", inventoryUnitRoutes);
 app.use("/api/inventory-categories", inventoryCategoryRoutes);
-app.use("/api/stock-locations", stockLocationRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/raw-materials", rawMaterialRoutes);
 app.use("/api/raw-material-stock", rawMaterialStockRoutes);
@@ -150,21 +145,12 @@ app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/goods-receipts", goodsReceiptRoutes);
 app.use("/api/quality-inspections", qualityInspectionRoutes);
 app.use("/api/finished-products", finishedProductRoutes);
-app.use("/api/bills-of-materials", billOfMaterialRoutes);
+app.use("/api/bills-of-materials", bomRoutes);
 app.use("/api/production-orders", productionOrderRoutes);
-app.use("/api/finished-product-stock", finishedProductStockRoutes);
-app.use("/api/customers", customerRoutes);
-app.use("/api/sales-orders", salesOrderRoutes);
-app.use("/api/dispatches", dispatchRoutes);
-app.use("/api/invoices", invoiceRoutes);
-app.use("/api/customer-returns", customerReturnRoutes);
-app.use("/api/machines", machineRoutes);
-app.use("/api/tools", toolRoutes);
-app.use("/api/tool-assignments", toolAssignmentRoutes);
-app.use("/api/stock-transfers", stockTransferRoutes);
-app.use("/api/stock-adjustments", stockAdjustmentRoutes);
-app.use("/api/damage-loss-reports", damageLossRoutes);
-app.use("/api/inventory-notification-rules", inventoryNotificationRuleRoutes);
+app.use("/api/production-consumption", productionConsumptionRoutes);
+app.use("/api/production-wastage", productionWastageRoutes);
+app.use("/api/production-outputs", productionOutputRoutes);
+app.use("/api/finished-stock", finishedStockRoutes);
 
 const PORT = process.env.PORT || 5000;
 

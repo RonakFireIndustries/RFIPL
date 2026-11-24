@@ -97,6 +97,13 @@ const PATHS = {
       <path d="M20 17H4" />
     </>
   ),
+  layers: (
+    <>
+      <path d="m12 2 10 5-10 5L2 7l10-5Z" />
+      <path d="m2 17 10 5 10-5" />
+      <path d="m2 12 10 5 10-5" />
+    </>
+  ),
   cart: (
     <>
       <circle cx="8" cy="21" r="1" />
@@ -108,6 +115,19 @@ const PATHS = {
     <>
       <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
       <path d="M8 7h8M8 11h8M8 15h5" />
+    </>
+  ),
+  clipboardCheck: (
+    <>
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" />
+      <path d="m9 14 2 2 4-4" />
+    </>
+  ),
+  factory: (
+    <>
+      <path d="M3 21V10l6 4V10l6 4V6l6-3v18H3Z" />
+      <path d="M7 17h.01M11 17h.01M15 17h.01M19 17h.01" />
     </>
   ),
   settings: (

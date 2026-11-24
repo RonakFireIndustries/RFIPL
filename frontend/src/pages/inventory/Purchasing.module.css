@@ -1,0 +1,371 @@
+/* Purchasing workspace: tabs, workflow cards and line-item editors. */
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 5px;
+  margin-bottom: 20px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.tab {
+  padding: 9px 17px;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.tab:hover {
+  color: var(--text-h);
+}
+
+.tabActive {
+  background: var(--surface);
+  color: var(--accent-strong);
+  box-shadow: var(--shadow-xs, none);
+}
+
+.workflowStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.step {
+  padding: 13px 15px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.stepLabel {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.stepValue {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.docNumber {
+  font-weight: 700;
+  color: var(--accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.lineItems {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.lineHeader,
+.lineRow {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr 0.9fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.lineHeader {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.lineRow {
+  padding: 9px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.lineRow input,
+.lineRow select {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--gray-700);
+  font-size: var(--fs-md);
+  outline: none;
+}
+
+.lineRow input:focus,
+.lineRow select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
+}
+
+.lineLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.lineTotal {
+  font-weight: 700;
+  color: var(--text-h);
+  font-variant-numeric: tabular-nums;
+}
+
+.smallBtn {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--gray-600);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.smallBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.dangerSmall {
+  composes: smallBtn;
+  color: var(--danger);
+}
+
+.dangerSmall:hover {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+}
+
+.addLineBtn {
+  align-self: flex-start;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.detailItem {
+  padding: 10px 12px;
+  background: var(--surface-alt);
+  border-radius: var(--r-md);
+}
+
+.detailLabel {
+  display: block;
+  font-size: var(--fs-sm);
+  color: var(--faint);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.detailValue {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-md);
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.qcRow {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr 0.9fr 1.2fr;
+  gap: 10px;
+  align-items: end;
+  padding: 11px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.qcRow label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.qcRow input,
+.qcRow select {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--gray-700);
+  font-size: var(--fs-md);
+  outline: none;
+}
+
+.qcStatus {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressText {
+  font-size: var(--fs-sm);
+  color: var(--faint);
+}
+
+.subtleBlock {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--faint);
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: var(--fs-lg);
+  font-weight: 650;
+  color: var(--text-h);
+}
+
+.note {
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  color: var(--info-fg);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.sectionGap {
+  margin-top: 22px;
+}
+
+.spacedInput {
+  margin-top: 7px;
+}
+
+.badgeAmber {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--faint);
+  line-height: 1.5;
+}
+
+.checkboxLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.outputHeader,
+.outputRow {
+  display: grid;
+  grid-template-columns: 1.5fr 0.7fr 0.6fr 1.1fr 1fr 0.7fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.outputHeader {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.outputRow {
+  padding: 9px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.outputRow input,
+.outputRow select {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--gray-700);
+  font-size: var(--fs-md);
+  outline: none;
+}
+
+.outputRow input:focus,
+.outputRow select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
+}
+
+@media (max-width: 1100px) {
+  .outputHeader,
+  .outputRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .lineHeader,
+  .lineRow {
+    grid-template-columns: 1fr 1fr;
+  }
+  .qcRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
